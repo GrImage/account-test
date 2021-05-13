@@ -1,6 +1,5 @@
 package it.grimage.accounttest.service.account;
 
-import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
 
