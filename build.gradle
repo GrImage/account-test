@@ -20,13 +20,24 @@ repositories {
 }
 
 dependencies {
+	// retrofit+addons for web service calls
+	implementation 'com.squareup.retrofit2:retrofit:2.9.0'
+	implementation 'com.squareup.retrofit2:converter-jackson:2.9.0'
+
+	// spring boot dependencies
 	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
 	implementation 'org.springframework.boot:spring-boot-starter-web'
 	implementation 'org.springframework.boot:spring-boot-starter-validation'
-	compileOnly 'org.projectlombok:lombok'
 	developmentOnly 'org.springframework.boot:spring-boot-devtools'
+
+	// h2 database for (dummy) persistence
 	runtimeOnly 'com.h2database:h2'
+
+	// lombok (code generation)
+	compileOnly 'org.projectlombok:lombok'
 	annotationProcessor 'org.projectlombok:lombok'
+
+	// test dependencies
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 }
 
