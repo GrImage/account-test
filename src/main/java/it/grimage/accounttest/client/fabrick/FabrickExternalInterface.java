@@ -20,17 +20,17 @@ public interface FabrickExternalInterface {
      */
     String BASE_PATH = "api/gbs/banking/v4.0/accounts";
 
-    @GET("/{accountId}/balance")
+    @GET(BASE_PATH + "/{accountId}/balance")
     Call<FabrickResponse> getBalance(
         @Path("accountId") long accountId);
 
-    @GET("/{accountId}/transactions")
+    @GET(BASE_PATH + "/{accountId}/transactions")
     Call<FabrickResponse> getTransactions(
         @Path("accountId") long accountId,
         @Query("fromAccountingDate") LocalDate from,
         @Query("toAccountingDate") LocalDate to);
 
-    @POST("/{accountId}/payments/money-transfers")
+    @POST(BASE_PATH + "/{accountId}/payments/money-transfers")
     // from the docs it appear this is the only accepted time zone, so it makes little sense parameterizing it
     @Headers(FabrickClient.HEADER_TIME_ZONE + ": Europe/Rome")
     Call<FabrickResponse> executeTransfer(

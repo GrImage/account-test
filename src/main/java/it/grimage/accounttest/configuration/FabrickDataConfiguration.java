@@ -1,6 +1,7 @@
 package it.grimage.accounttest.configuration;
 
 import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.stereotype.Component;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -11,6 +12,7 @@ import lombok.ToString;
  * from the configuration files
  */
 @ConfigurationProperties("account.fabrick")
+@Component
 @Getter
 @Setter
 @ToString
