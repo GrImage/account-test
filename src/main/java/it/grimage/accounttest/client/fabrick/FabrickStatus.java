@@ -1,5 +1,7 @@
 package it.grimage.accounttest.client.fabrick;
 
+import com.fasterxml.jackson.annotation.JsonEnumDefaultValue;
+
 /**
  * This enumerated class describes the possible outcomes of a fabrick call
  */
@@ -22,5 +24,13 @@ public enum FabrickStatus {
      * won't)
      */
     PENDING,
+
+    /**
+     * This value is not actually returned by the web service, but is used as a
+     * catch-all fallback in case of new values so that the internal components
+     * can still handle it gracefully (and send a meaningful error)
+     */
+    @JsonEnumDefaultValue
+    UNKNOWN,
     ;
 }

@@ -1,11 +1,21 @@
 package it.grimage.accounttest.client.fabrick;
 
 import java.io.IOException;
+import java.time.LocalDate;
 
+import javax.validation.Valid;
+import javax.validation.constraints.NotNull;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
+
+import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Component;
+import org.springframework.validation.annotation.Validated;
 
+import it.grimage.accounttest.configuration.AccountAppConfiguration;
+import it.grimage.accounttest.exception.FabrickException;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import retrofit2.Call;
 import retrofit2.Response;
 
 /**
@@ -14,46 +24,62 @@ import retrofit2.Response;
  * handle failed responses, and to provide a mockable interface for tests.
  */
 @Component
+@Validated
+@RequiredArgsConstructor
 @Slf4j
 public class FabrickClient {
-    private final FabrickExternalInterface ext;
+    /**
+     * This header holds time zone information, both when sending and receiving
+     * data. Standard java ZoneId format
+     */
+    static final String HEADER_TIME_ZONE = "X-Time-Zone";
 
-    add javadoc
-    private <T> T getPayloadOrThrow(
-        Response<FabrickResponse> response,
-        Class<T> targetClass,
-        String callId) throws IOException {
+    private final FabrickExternalInterface ext;
+    private final AccountAppConfiguration appConfiguration;
+    private final ObjectMapper mapper;
+
+    /**
+     * This method wraps common checks on received response at network level
+     * (i.e. failed calls) by loggin failure data and wrapping them in more
+     * specific exceptions
+     * @param response a retrofit response
+     * @param callId a descriptor of the call point, used in logs to identify the caller
+     * @return the extracted response, if no errors are found
+     * @throws IOException 
+     */
+    @NonNull
+    private FabrickResponse getResponseOrThrow(@NonNull Response<FabrickResponse> response, @NonNull String callId) throws IOException {
         log.debug("Examining response for {}", callId);
         if (!response.isSuccessful()) {
-            throw something;
+            // parse the body anyway and wrap it in an exception
+            FabrickResponse errorBody = mapper.readValue(
+                response.errorBody().charStream(),
+                FabrickResponse.class);
+            throw new FabrickException(callId, errorBody);
         }
-
-        // Nope - this part belong to the service layer
-        FabrickResponse fabrickResponse = response.body();
-        FabrickStatus fabrickStatus = fabrickResponse.getStatus();
-        if (fabrickStatus == null) {
-            // this shouldn't happen, but let's handle it just in case
-            throw something else
-        }
-
-        switch(fabrickStatus) {
-            case KO:
-                read error and throw
-                break;
-            case PENDING:
-                just throw
-                break;
-            case OK:
-                break;
-            default:
-                // this should never happen unless new enum values are added without handling them here
-                log.error("Received unknown status {} while calling {}", fabrickStatus, callId);
-                throw new IllegalArgumentException("Unknown status");
-                break;
-        }
+        return response.body();
     }
 
-    public AccountBalance getBalance() throws IOException {
-        Response<FabrickResponse> response = ext.getBalance().execute();
+    /**
+     * Fetch the account id used for web service calls from configuration
+     * @return the account id to use
+     */
+    private long getAccountId() {
+        return appConfiguration.getAccountId();
+    }
+
+    public FabrickResponse getBalance() throws IOException {
+        Response<FabrickResponse> response = ext.getBalance(getAccountId()).execute();
+        return getResponseOrThrow(response, "getBalance");
+    }
+
+    public FabrickResponse getTransactions(@NotNull LocalDate from, @NotNull LocalDate to) throws IOException {
+        Response<FabrickResponse> response = ext.getTransactions(getAccountId(), from, to).execute();
+        return getResponseOrThrow(response, "getTransactions");
+    }
+
+    public FabrickResponse processTransfer(@NotNull @Valid FabrickTransferRequest request) throws IOException {
+        Response<FabrickResponse> response = ext.executeTransfer(getAccountId(), request).execute();
+        return getResponseOrThrow(response, "processTransfer");
     }
 }

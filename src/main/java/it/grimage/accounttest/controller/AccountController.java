@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import it.grimage.accounttest.client.fabrick.AccountBalance;
+import it.grimage.accounttest.client.fabrick.AccountTransaction;
 import it.grimage.accounttest.controller.api.TransferRequest;
 import it.grimage.accounttest.service.account.AccountService;
 
@@ -36,7 +37,7 @@ public class AccountController {
     }
 
     @GetMapping(path="account/transactions", produces = MediaType.APPLICATION_JSON_VALUE)
-    public List<String> getTransactions(
+    public List<AccountTransaction> getTransactions(
         @RequestParam("from") @NotNull LocalDate fromDate,
         @RequestParam("to") @NotNull LocalDate toDate) throws IOException {
             return service.getTransactions(fromDate, toDate);

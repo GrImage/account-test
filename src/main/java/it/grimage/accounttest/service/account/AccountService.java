@@ -10,6 +10,7 @@ import javax.validation.constraints.NotNull;
 import org.springframework.validation.annotation.Validated;
 
 import it.grimage.accounttest.client.fabrick.AccountBalance;
+import it.grimage.accounttest.client.fabrick.AccountTransaction;
 import it.grimage.accounttest.controller.api.TransferRequest;
 
 /**
@@ -28,11 +29,12 @@ public interface AccountService {
      * @param from starting date, not <code>null</code>
      * @param to ending date, not <code>null</code>
      */
-    List<String> getTransactions(@NotNull LocalDate from, @NotNull LocalDate to) throws IOException;
+    List<AccountTransaction> getTransactions(@NotNull LocalDate from, @NotNull LocalDate to) throws IOException;
 
     /**
      * Performs a bank transfer using the data contained in the 
      * given request
+     * @return 
      */
-    void makeTransfer(@NotNull @Valid TransferRequest request) throws IOException;
+    Object makeTransfer(@NotNull @Valid TransferRequest request) throws IOException;
 }

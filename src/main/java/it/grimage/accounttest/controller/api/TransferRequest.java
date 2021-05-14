@@ -3,6 +3,7 @@ package it.grimage.accounttest.controller.api;
 import java.time.LocalDate;
 
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
@@ -25,9 +26,11 @@ public class TransferRequest {
     @NotBlank
     private String currency;
 
-    @Pattern(regexp = "\\d+")
+    @NotBlank
+    @Pattern(regexp = "\\d+(?\\.\\d+)?")
     private String amount;
 
+    @NotNull
     @JsonFormat(shape = Shape.STRING, pattern = "yyyy-MM-dd")
-    private LocalDate executionDate; //YYYY-MM-DD
+    private LocalDate executionDate;
 }
