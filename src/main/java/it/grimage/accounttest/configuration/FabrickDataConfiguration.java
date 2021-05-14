@@ -1,7 +1,8 @@
 package it.grimage.accounttest.configuration;
 
 import org.springframework.boot.context.properties.ConfigurationProperties;
-import org.springframework.stereotype.Component;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.PropertySource;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -11,8 +12,9 @@ import lombok.ToString;
  * This class reads and exposes access informations for the fabricks service
  * from the configuration files
  */
+@PropertySource("classpath:fabrickKey.properties")
 @ConfigurationProperties("account.fabrick")
-@Component
+@Configuration
 @Getter
 @Setter
 @ToString
