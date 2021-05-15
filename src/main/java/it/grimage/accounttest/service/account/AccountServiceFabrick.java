@@ -33,7 +33,7 @@ import lombok.extern.slf4j.Slf4j;
 /**
  * <p>Default implementation of the {@link AccountService} service, backed
  * by the fabrick services</p>
- * @see https://developers.fabrick.com</p>
+ * @see https://developers.fabrick.com
  */
 @Service
 @RequiredArgsConstructor
