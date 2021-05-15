@@ -21,13 +21,16 @@ public class TransferRequest {
     private String receiverName;
 
     @NotBlank
+    private String receiverAccountCode;
+
+    @NotBlank
     private String description;
 
     @NotBlank
     private String currency;
 
     @NotBlank
-    @Pattern(regexp = "\\d+(?\\.\\d+)?")
+    @Pattern(regexp = "\\d+(?:\\.\\d+)?")
     private String amount;
 
     @NotNull

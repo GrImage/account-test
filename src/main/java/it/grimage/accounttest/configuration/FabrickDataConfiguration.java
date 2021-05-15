@@ -12,7 +12,8 @@ import lombok.ToString;
  * This class reads and exposes access informations for the fabricks service
  * from the configuration files
  */
-@PropertySource("classpath:fabrickKey.properties")
+// include file with api key, optional so that it can also be provided via start options
+@PropertySource(ignoreResourceNotFound = true, value = "classpath:fabrickKey.properties")
 @ConfigurationProperties("account.fabrick")
 @Configuration
 @Getter

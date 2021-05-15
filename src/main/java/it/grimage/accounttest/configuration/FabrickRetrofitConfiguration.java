@@ -61,7 +61,14 @@ public class FabrickRetrofitConfiguration {
     @Bean
     @Scope(SCOPE_SINGLETON)
     public FabrickAuthenticatorInterceptor getFabrickAuthenticatorInterceptor() {
-        return new FabrickAuthenticatorInterceptor(getFabrickApiKey());
+        String apiKey = getFabrickApiKey();
+        if (apiKey == null) {
+            throw new IllegalStateException(
+                "Api key configuration property 'account.fabrick.apiKey' is missing. "
+                + "Either add a fabrickKey.properties file to classpath that defines it, "
+                + "or add it externally to starting spring parameters.");
+        }
+        return new FabrickAuthenticatorInterceptor(apiKey);
     }
 
     private String getFabrickApiKey() {

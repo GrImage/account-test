@@ -3,7 +3,6 @@ package it.grimage.accounttest.client.fabrick;
 import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonAlias;
-import com.fasterxml.jackson.databind.JsonNode;
 
 import lombok.Data;
 
@@ -11,7 +10,7 @@ import lombok.Data;
  * Generic container for the fabrick responses
  */
 @Data
-public class FabrickResponse {
+public class FabrickResponse<T> {
     /**
      * Status. The presence or absence of other fields will depend on this
      */
@@ -29,8 +28,8 @@ public class FabrickResponse {
     private List<FabrickError> errors;
 
     /**
-     * Response payload. Since we don't know what this will contain, we'll read
-     * it as json node (faster) and convert it later to the specific type
+     * Response payload. Generic since each response will return a different data
+     * structure
      */
-    private JsonNode payload;
+    private T payload;
 }

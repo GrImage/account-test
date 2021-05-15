@@ -8,12 +8,19 @@ import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
+import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 /**
  * This class maps a transfer request to fabrick web services
  */
 @Data
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor(access = AccessLevel.PROTECTED)
 public class FabrickTransferRequest {
     /*
      * With more time, all enumerated values here could either become enums
@@ -35,6 +42,9 @@ public class FabrickTransferRequest {
     private TaxReliefData taxRelief;
 
     @Data
+    @Builder
+    @NoArgsConstructor
+    @AllArgsConstructor(access = AccessLevel.PROTECTED)
     public static class CreditorData {
         @NotBlank private String name;
         @NotNull @Valid private AccountData account;
@@ -42,12 +52,18 @@ public class FabrickTransferRequest {
     }
 
     @Data
+    @Builder
+    @NoArgsConstructor
+    @AllArgsConstructor(access = AccessLevel.PROTECTED)
     public static class AccountData {
         @NotBlank private String accountCode;
         private String bicCode;
     }
 
     @Data
+    @Builder
+    @NoArgsConstructor
+    @AllArgsConstructor(access = AccessLevel.PROTECTED)
     public static class AddressData {
         private String address;
         private String city;
@@ -55,6 +71,9 @@ public class FabrickTransferRequest {
     }
 
     @Data
+    @Builder
+    @NoArgsConstructor
+    @AllArgsConstructor(access = AccessLevel.PROTECTED)
     public static class TaxReliefData {
         private String taxReliefId;
         @NotNull private Boolean isCondoUpgrade;
@@ -64,6 +83,9 @@ public class FabrickTransferRequest {
     }
 
     @Data
+    @Builder
+    @NoArgsConstructor
+    @AllArgsConstructor(access = AccessLevel.PROTECTED)
     public static class NaturalPersonBeneficiaryData {
         @NotBlank private String fiscalCode1;
         private String fiscalCode2;
@@ -73,6 +95,9 @@ public class FabrickTransferRequest {
     }
 
     @Data
+    @Builder
+    @NoArgsConstructor
+    @AllArgsConstructor(access = AccessLevel.PROTECTED)
     public static class LegalPersonBeneficiaryData {
         @NotBlank private String fiscalCode;
         private String legalRepresentativeFiscalCode;

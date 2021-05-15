@@ -1,6 +1,5 @@
 package it.grimage.accounttest.controller;
 
-import java.io.IOException;
 import java.time.LocalDate;
 import java.util.List;
 
@@ -20,6 +19,7 @@ import org.springframework.web.bind.annotation.RestController;
 import it.grimage.accounttest.client.fabrick.AccountBalance;
 import it.grimage.accounttest.client.fabrick.AccountTransaction;
 import it.grimage.accounttest.controller.api.TransferRequest;
+import it.grimage.accounttest.exception.AccountServiceException;
 import it.grimage.accounttest.service.account.AccountService;
 
 /**
@@ -32,14 +32,14 @@ public class AccountController {
     private final AccountService service;
 
     @GetMapping(path="account/balance", produces = MediaType.APPLICATION_JSON_VALUE)
-    public AccountBalance getBalance() throws IOException {
+    public AccountBalance getBalance() throws AccountServiceException {
         return service.getBalance();
     }
 
     @GetMapping(path="account/transactions", produces = MediaType.APPLICATION_JSON_VALUE)
     public List<AccountTransaction> getTransactions(
-        @RequestParam("from") @NotNull LocalDate fromDate,
-        @RequestParam("to") @NotNull LocalDate toDate) throws IOException {
+        @RequestParam("fromAccountingDate") @NotNull LocalDate fromDate,
+        @RequestParam("toAccountingDate") @NotNull LocalDate toDate) throws AccountServiceException {
             return service.getTransactions(fromDate, toDate);
     }
 
@@ -47,7 +47,7 @@ public class AccountController {
         path="account/transfer",
         consumes = MediaType.APPLICATION_JSON_VALUE,
         produces = MediaType.APPLICATION_JSON_VALUE)
-    public void executeTransfer(@RequestBody @Valid TransferRequest request) throws IOException {
+    public void executeTransfer(@RequestBody @Valid TransferRequest request) throws AccountServiceException {
         service.makeTransfer(request);
     }
 }

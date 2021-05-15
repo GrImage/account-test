@@ -12,6 +12,7 @@ import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Component;
 import org.springframework.validation.annotation.Validated;
 
+import it.grimage.accounttest.client.fabrick.AccountTransaction.AccountTransactionList;
 import it.grimage.accounttest.configuration.AccountAppConfiguration;
 import it.grimage.accounttest.exception.FabrickException;
 import lombok.RequiredArgsConstructor;
@@ -48,11 +49,11 @@ public class FabrickClient {
      * @throws IOException 
      */
     @NonNull
-    private FabrickResponse getResponseOrThrow(@NonNull Response<FabrickResponse> response, @NonNull String callId) throws IOException {
+    private <T> FabrickResponse<T> getResponseOrThrow(@NonNull Response<FabrickResponse<T>> response, @NonNull String callId) throws IOException {
         log.debug("Examining response for {}", callId);
         if (!response.isSuccessful()) {
             // parse the body anyway and wrap it in an exception
-            FabrickResponse errorBody = mapper.readValue(
+            FabrickResponse<?> errorBody = mapper.readValue(
                 response.errorBody().charStream(),
                 FabrickResponse.class);
             throw new FabrickException(callId, errorBody);
@@ -68,18 +69,18 @@ public class FabrickClient {
         return appConfiguration.getAccountId();
     }
 
-    public FabrickResponse getBalance() throws IOException {
-        Response<FabrickResponse> response = ext.getBalance(getAccountId()).execute();
+    public FabrickResponse<AccountBalance> getBalance() throws IOException {
+        Response<FabrickResponse<AccountBalance>> response = ext.getBalance(getAccountId()).execute();
         return getResponseOrThrow(response, "getBalance");
     }
 
-    public FabrickResponse getTransactions(@NotNull LocalDate from, @NotNull LocalDate to) throws IOException {
-        Response<FabrickResponse> response = ext.getTransactions(getAccountId(), from, to).execute();
+    public FabrickResponse<AccountTransactionList> getTransactions(@NotNull LocalDate from, @NotNull LocalDate to) throws IOException {
+        Response<FabrickResponse<AccountTransactionList>> response = ext.getTransactions(getAccountId(), from, to).execute();
         return getResponseOrThrow(response, "getTransactions");
     }
 
-    public FabrickResponse processTransfer(@NotNull @Valid FabrickTransferRequest request) throws IOException {
-        Response<FabrickResponse> response = ext.executeTransfer(getAccountId(), request).execute();
+    public FabrickResponse<FabrickTransferResponse> processTransfer(@NotNull @Valid FabrickTransferRequest request) throws IOException {
+        Response<FabrickResponse<FabrickTransferResponse>> response = ext.executeTransfer(getAccountId(), request).execute();
         return getResponseOrThrow(response, "processTransfer");
     }
 }

@@ -1,0 +1,87 @@
+{
+	"info": {
+		"_postman_id": "db979b77-e6ad-458b-9f49-32e9f9087fa8",
+		"name": "AccountTest",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Accounts",
+			"item": [
+				{
+					"name": "Get Transactions",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{accountHost}}/account/transactions?fromAccountingDate=2019-01-01&toAccountingDate=2019-12-01",
+							"host": [
+								"{{accountHost}}"
+							],
+							"path": [
+								"account",
+								"transactions"
+							],
+							"query": [
+								{
+									"key": "fromAccountingDate",
+									"value": "2019-01-01"
+								},
+								{
+									"key": "toAccountingDate",
+									"value": "2019-12-01"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Account Balance",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{accountHost}}/account/balance",
+							"host": [
+								"{{accountHost}}"
+							],
+							"path": [
+								"account",
+								"balance"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Make money transfer",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"receiverName\": \"Someone\",\r\n    \"receiverAccountCode\": \"GB94BARC10201530093459\",\r\n    \"description\": \"Pagamento per servizi\",\r\n    \"currency\": \"EUR\",\r\n    \"amount\": \"145.6\",\r\n    \"executionDate\": \"2021-05-18\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{accountHost}}/account/transfer",
+							"host": [
+								"{{accountHost}}"
+							],
+							"path": [
+								"account",
+								"transfer"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	]
+}

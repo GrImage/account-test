@@ -21,5 +21,5 @@ public class FabrickException extends IOException {
     /**
      * The full response of the fabrick ws, if available
      */
-    private final FabrickResponse response;
+    private final FabrickResponse<?> response;
 }
