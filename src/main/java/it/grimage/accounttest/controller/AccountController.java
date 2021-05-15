@@ -47,7 +47,15 @@ public class AccountController {
         path="account/transfer",
         consumes = MediaType.APPLICATION_JSON_VALUE,
         produces = MediaType.APPLICATION_JSON_VALUE)
-    public void executeTransfer(@RequestBody @Valid TransferRequest request) throws AccountServiceException {
+    public void executeTransferAsJson(@RequestBody @Valid TransferRequest request) throws AccountServiceException {
+        service.makeTransfer(request);
+    }
+
+    @PostMapping(
+        path="account/transfer",
+        consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE,
+        produces = MediaType.APPLICATION_JSON_VALUE)
+    public void executeTransferAsForm(@Valid TransferRequest request) throws AccountServiceException {
         service.makeTransfer(request);
     }
 }
