@@ -1,0 +1,19 @@
+{
+    "properties": [
+        {
+            "name": "account.fabrick.url",
+            "type": "java.lang.String",
+            "description": "Url used to contact fabrick web service"
+        },
+        {
+            "name": "account.account-id",
+            "type": "java.lang.String",
+            "description": "Id of the account used to access fabrick api"
+        },
+        {
+            "name": "account.fabrick.api-key",
+            "type": "java.lang.String",
+            "description": "Api-key of the fabrick web service"
+        }
+    ]
+}

@@ -4,6 +4,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.catchThrowableOfType;
 import static org.assertj.core.api.Assertions.tuple;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.when;
 
 import java.io.IOException;
 import java.math.BigDecimal;
@@ -15,8 +16,8 @@ import com.google.common.collect.ImmutableList;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.Mockito;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.context.annotation.Import;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import it.grimage.accounttest.client.fabrick.AccountBalance;
@@ -27,22 +28,26 @@ import it.grimage.accounttest.client.fabrick.FabrickResponse;
 import it.grimage.accounttest.client.fabrick.FabrickStatus;
 import it.grimage.accounttest.client.fabrick.FabrickTransferResponse;
 import it.grimage.accounttest.client.fabrick.AccountTransaction.AccountTransactionList;
+import it.grimage.accounttest.configuration.ModelMapperConfiguration;
 import it.grimage.accounttest.controller.api.TransferRequest;
 import it.grimage.accounttest.exception.AccountServiceException;
 import it.grimage.accounttest.exception.FabrickException;
 import it.grimage.accounttest.service.account.AccountServiceFabrick;
+import it.grimage.accounttest.service.account.TransactionPersister;
 
 /**
  * Test of the fabrick implementation 
  */
 @ExtendWith(SpringExtension.class)
+@Import(ModelMapperConfiguration.class)
 public class FabrickAccountServiceTest {
     @MockBean private FabrickClient client;
+    @MockBean private TransactionPersister persister;
     private AccountServiceFabrick service;
 
     @BeforeEach
     public void prepareService() {
-        service = new AccountServiceFabrick(client);
+        service = new AccountServiceFabrick(client, persister);
     }
 
     private AccountTransaction transaction(String id, BigDecimal amount, LocalDate date) {
@@ -65,7 +70,7 @@ public class FabrickAccountServiceTest {
         FabrickResponse<AccountBalance> response = new FabrickResponse<>();
         response.setStatus(FabrickStatus.OK);
         response.setPayload(givenBalance);
-        Mockito.when(client.getBalance()).thenReturn(response);
+        when(client.getBalance()).thenReturn(response);
 
         AccountBalance gotBalance = service.getBalance();
 
@@ -86,7 +91,7 @@ public class FabrickAccountServiceTest {
         FabrickResponse<AccountTransactionList> response = new FabrickResponse<>();
         response.setStatus(FabrickStatus.OK);
         response.setPayload(givenList);
-        Mockito.when(client.getTransactions(any(), any())).thenReturn(response);
+        when(client.getTransactions(any(), any())).thenReturn(response);
 
         LocalDate start = LocalDate.now().minusDays(20);
         LocalDate end = LocalDate.now();
@@ -103,7 +108,7 @@ public class FabrickAccountServiceTest {
         FabrickResponse<FabrickTransferResponse> response = new FabrickResponse<>();
         response.setStatus(FabrickStatus.KO);
         response.setErrors(ImmutableList.of(new FabrickError()));
-        Mockito.when(client.processTransfer(any())).thenThrow(new FabrickException("transfer", response));
+        when(client.processTransfer(any())).thenThrow(new FabrickException("transfer", response));
 
         TransferRequest request = new TransferRequest();
         request.setReceiverName("Me");

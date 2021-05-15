@@ -5,6 +5,7 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
 
+import javax.transaction.Transactional;
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 
@@ -39,6 +40,7 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class AccountServiceFabrick implements AccountService {
     private final FabrickClient client;
+    private final TransactionPersister persister;
 
     @Override
     public AccountBalance getBalance() throws AccountServiceException {
@@ -53,12 +55,15 @@ public class AccountServiceFabrick implements AccountService {
         }
     }
 
+    @Transactional
     @Override
     public List<AccountTransaction> getTransactions(@NotNull LocalDate from, @NotNull LocalDate to) throws AccountServiceException {
         try {
             FabrickResponse<AccountTransactionList> response = client.getTransactions(from, to);
             AccountTransactionList list = getPayload(response, "getTransactions");
-            return list.getList();
+            List<AccountTransaction> transactions = list.getList();
+            persister.storeUnkwnownTransactions(transactions);
+            return transactions;
         } catch (FabrickException e) {
             log.error("Received fabrick error {} on {}", e.getResponse(), e.getCallId());
             throw AccountServiceException.generic(e);
